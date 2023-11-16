@@ -1,0 +1,17 @@
+{
+    "name": "FogControls",
+    "rootNamespace": "",
+    "references": [
+        "GUID:946ad27fa286e62409a42cca7d545b88",
+        "GUID:c310b74e062abda438f54bb379d56ce2"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
