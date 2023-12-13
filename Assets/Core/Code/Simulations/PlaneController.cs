@@ -5,6 +5,5 @@ namespace Simulations
     public class PlaneController : MonoBehaviour
     {
 
-
     }
 }

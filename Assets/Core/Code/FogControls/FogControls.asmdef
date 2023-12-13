@@ -1,6 +1,6 @@
 {
     "name": "FogControls",
-    "rootNamespace": "",
+    "rootNamespace": "FogControls",
     "references": [
         "GUID:946ad27fa286e62409a42cca7d545b88",
         "GUID:c310b74e062abda438f54bb379d56ce2"
