@@ -214,7 +214,7 @@ MonoBehaviour:
   templateMaterial: {fileID: 2100000, guid: c6d12b38c8b1b8e4c8fbd3e2c8376514, type: 2}
   blendMat: {fileID: 0}
   blendMatInstance: {fileID: 0}
-  keywordSO: {fileID: 11400000, guid: ac3bfa678e88d654ca324ddc974cea79, type: 2}
+  keywordSO: {fileID: 11400000, guid: 8b3ab32b802af3e48949498924a9e41a, type: 2}
   perPixelNormal: {fileID: 0}
   streamTexture: {fileID: 0}
   cavityMap: {fileID: 0}
