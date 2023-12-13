@@ -7,6 +7,7 @@ namespace Utilities
     {
         [SerializeField] private AudioClip audioClip;
         [SerializeField] private bool loop = false;
+        [SerializeField] private bool playOnStart = false;
         private AudioSource audioSource;
 
         private void Start()
@@ -14,6 +15,7 @@ namespace Utilities
             audioSource = GetComponent<AudioSource>();
             audioSource.clip = audioClip;
             audioSource.loop = loop;
+            if (playOnStart) PlaySound();
         }
 
         public void PlaySound()
