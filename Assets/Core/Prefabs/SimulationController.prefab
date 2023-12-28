@@ -50,6 +50,6 @@ MonoBehaviour:
   missileLauncherPrefab: {fileID: 6591410193130336489, guid: 7b994ece5dc5a134ca681c25b54eb3b8, type: 3}
   spawningBounds: 0.01
   minObjectDistance: 1000
-  maxObjectDistance: 2500
+  maxObjectDistance: 2000
   minHeight: 15
   planeInitialHeight: 1000

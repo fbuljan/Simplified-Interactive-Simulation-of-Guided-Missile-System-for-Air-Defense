@@ -337,6 +337,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 1887641099703607920, guid: af833a25befc4b4448ad81c093827422, type: 3}
+      propertyPath: angularSpeed
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 7207424129740156631, guid: af833a25befc4b4448ad81c093827422, type: 3}
       propertyPath: m_Name
       value: Missile (Launched)

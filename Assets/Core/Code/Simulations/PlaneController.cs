@@ -8,8 +8,11 @@ namespace Simulations
         [SerializeField] private float maxSpeed = 10f;
         [SerializeField] private float maxHeight = 100f;
         [SerializeField] private LayerMask terrainLayer;
+        [SerializeField] private GameObject explosion;
         private float currentSpeed = 0f;
         private Vector3 targetPosition;
+        private Quaternion targetFallRotation;
+        private bool isHit = false;
 
         public Vector3 TargetPosition { get => targetPosition; set => targetPosition = value; }
 
@@ -20,6 +23,12 @@ namespace Simulations
 
         private void MoveTowardsTarget()
         {
+            if (isHit)
+            {
+                FallDown();
+                return;
+            }
+
             transform.LookAt(targetPosition);
             currentSpeed = Mathf.Min(currentSpeed + acceleration * Time.deltaTime, maxSpeed);
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, currentSpeed * Time.deltaTime);
@@ -32,10 +41,33 @@ namespace Simulations
                 targetPosition = new Vector3(targetPosition.x, hit.point.y + maxHeight, targetPosition.z);
         }
 
+        private void FallDown()
+        {
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetFallRotation, 0.22f * Time.deltaTime);
+        }
+
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(targetPosition, 50f);
+        }
+
+        public void OnHit()
+        {
+            isHit = true;
+            Rigidbody rb = GetComponent<Rigidbody>();
+            rb.useGravity = true;
+            rb.isKinematic = false;
+            rb.AddForce(Vector3.down * 2500f, ForceMode.Acceleration);
+            targetFallRotation = Quaternion.Euler(30f, Random.Range(20, 120f), Random.Range(20f, 120f));
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (!other.TryGetComponent(out Terrain terrain)) return;
+
+            Instantiate(explosion, transform.position, Quaternion.identity);
+            Destroy(gameObject);
         }
     }
 }

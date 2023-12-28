@@ -50,7 +50,7 @@ namespace Simulations
         {
             Vector3 planePosition = GenerateRandomPositionOnTerrainWithinBounds();
             Vector3 planeTarget = GetOppositePosition(planePosition);
-            planeTarget += (planeTarget - planePosition) * 500f;
+            planeTarget += (planeTarget - planePosition) * 100f;
             plane = Instantiate(planePrefab, planePosition, Quaternion.identity);
             plane.GetComponent<PlaneController>().TargetPosition = planeTarget;
             Vector3 launcherPosition = GenerateLauncherPosition(planePosition);

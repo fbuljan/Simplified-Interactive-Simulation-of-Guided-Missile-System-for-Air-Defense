@@ -33,7 +33,7 @@ namespace Simulations
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawSphere(transform.position, activationRange);
+            Gizmos.DrawWireSphere(transform.position, activationRange);
         }
     }
 }

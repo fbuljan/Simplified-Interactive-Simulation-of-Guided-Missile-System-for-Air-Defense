@@ -10303,9 +10303,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 7.4
-  m_Height: 89.81
-  m_Direction: 0
-  m_Center: {x: 36.5, y: 0, z: 0}
+  m_Height: 75.13483
+  m_Direction: 2
+  m_Center: {x: -0.00000034182216, y: -3.003121e-13, z: 9.132589}
 --- !u!114 &1887641099703607920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10321,6 +10321,7 @@ MonoBehaviour:
   acceleration: 20
   maxSpeed: 200
   angularSpeed: 100
+  explosion: {fileID: 8692887893901918669, guid: 732c5656150c5464a8af074e930088be, type: 3}
 --- !u!1 &7559778687322583289
 GameObject:
   m_ObjectHideFlags: 0
