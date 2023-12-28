@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2329446974136070002
 MonoBehaviour:
@@ -46,3 +46,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startSimulationButton: 32
   endSimulationButton: 8
+  planePrefab: {fileID: 1993017680602157264, guid: 3ed30c433400cbf46a3a3965505fa44e, type: 3}
+  missileLauncherPrefab: {fileID: 6591410193130336489, guid: 7b994ece5dc5a134ca681c25b54eb3b8, type: 3}
+  spawningBounds: 0.01
+  minObjectDistance: 1000
+  maxObjectDistance: 2500
+  minHeight: 15
+  planeInitialHeight: 1000
