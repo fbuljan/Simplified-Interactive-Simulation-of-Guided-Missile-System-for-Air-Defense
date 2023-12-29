@@ -7,6 +7,7 @@ namespace Simulations
     {
         [SerializeField] private KeyCode startSimulationButton = KeyCode.Space;
         [SerializeField] private KeyCode endSimulationButton = KeyCode.Backspace;
+        [SerializeField] private KeyCode replayButton = KeyCode.R;
         [SerializeField] private GameObject planePrefab;
         [SerializeField] private GameObject missileLauncherPrefab;
         [SerializeField] private SoundPlayer backgroundSoundPlayer;
@@ -16,9 +17,13 @@ namespace Simulations
         [SerializeField] private float minHeight = 5f;
         [SerializeField] private float planeInitialHeight = 1000f;
         private Terrain terrain;
-        private bool simulationRunning = false;
         private GameObject plane;
         private GameObject missileLauncher;
+        private Vector3 planePositionCache;
+        private Vector3 planeTargetCache;
+        private Vector3 launcherPositionCache;
+        private bool simulationRunning = false;
+        private bool replayAvailable = false;
 
         public KeyCode EndSimulationButton => endSimulationButton;
         public KeyCode StartSimulationButton => startSimulationButton;
@@ -37,6 +42,8 @@ namespace Simulations
         {
             if (Input.GetKeyDown(startSimulationButton)) StartSimulation();
             if (Input.GetKeyDown(endSimulationButton)) StopSimulation(false);
+            if (Input.GetKeyDown(replayButton) && replayAvailable)
+                Simulate(planePositionCache, planeTargetCache, launcherPositionCache);
         }
 
         private void StartSimulation()
@@ -51,14 +58,29 @@ namespace Simulations
 
         private void InitSimulation()
         {
+            //todo hide UI
             Vector3 planePosition = GenerateRandomPositionOnTerrainWithinBounds();
             Vector3 planeTarget = GetOppositePosition(planePosition);
             planeTarget += (planeTarget - planePosition) * 100f;
+            Vector3 launcherPosition = GenerateLauncherPosition(planePosition);
+            SaveCache(planePosition, planeTarget, launcherPosition);
+            Simulate(planePosition, planeTarget, launcherPosition);
+        }
+
+        private void SaveCache(Vector3 planePosition, Vector3 planeTarget, Vector3 launcherPosition)
+        {
+            planePositionCache = planePosition;
+            planeTargetCache = planeTarget;
+            launcherPositionCache = launcherPosition;
+        }
+
+        private void Simulate(Vector3 planePosition, Vector3 planeTarget, Vector3 launcherPosition)
+        {
+            replayAvailable = false;
             plane = Instantiate(planePrefab, planePosition, Quaternion.identity);
             PlaneController planeController = plane.GetComponent<PlaneController>();
             planeController.TargetPosition = planeTarget;
             planeController.OnPlaneCrashed += OnPlaneCrashed;
-            Vector3 launcherPosition = GenerateLauncherPosition(planePosition);
             missileLauncher = Instantiate(missileLauncherPrefab, launcherPosition, Quaternion.Euler(-90f, 0f, 0f));
             missileLauncher.GetComponent<MissileLauncherController>().Init(plane.transform);
         }
@@ -108,7 +130,7 @@ namespace Simulations
             newPosition = ClampPositionToTerrain(newPosition);
             newPosition.y = terrain.SampleHeight(newPosition) + terrain.transform.position.y;
 
-            if (newPosition.y < minHeight) 
+            if (newPosition.y < minHeight)
                 return GenerateLauncherPosition(referencePosition);
 
             return newPosition;
@@ -135,7 +157,7 @@ namespace Simulations
             Debug.Log("Simulation ended."); //todo add notifications to ui 
             if (plane) Destroy(plane);
             if (missileLauncher) Destroy(missileLauncher);
-            //if (planeCrashed) ReplayOption(); //todo add replay text to instructions in this moment
+            if (planeCrashed) replayAvailable = true; ; //todo add replay text to instructions in this moment
         }
     }
 }
