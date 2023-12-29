@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
-using Utilities;
 using Random = UnityEngine.Random;
 
 namespace Simulations
@@ -13,6 +13,7 @@ namespace Simulations
         [SerializeField] private LayerMask terrainLayer;
         [SerializeField] private GameObject explosion;
         [SerializeField] private GameObject cameraRoot;
+        [SerializeField] private List<GameObject> smokes;
         private Vector3 targetPosition;
         private Vector3 hitPosition;
         private Quaternion targetFallRotation;
@@ -72,6 +73,7 @@ namespace Simulations
             rb.AddForce(Vector3.down * 2500f, ForceMode.Acceleration);
             rb.AddForce(transform.forward * 3000f, ForceMode.Acceleration);
             targetFallRotation = Quaternion.Euler(30f, Random.Range(20, 120f), Random.Range(20f, 120f));
+            smokes.ForEach(smoke => smoke.SetActive(true));
             if (cameraRoot.transform.childCount > 0) cameraRoot.transform.GetChild(0).parent = null;
         }
 
