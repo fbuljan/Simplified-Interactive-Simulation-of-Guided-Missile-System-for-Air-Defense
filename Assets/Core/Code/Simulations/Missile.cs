@@ -1,4 +1,5 @@
 using UnityEngine;
+using Utilities;
 
 namespace Simulations
 {
@@ -8,10 +9,19 @@ namespace Simulations
         [SerializeField] private float maxSpeed = 20f;
         [SerializeField] private float angularSpeed = 20f;
         [SerializeField] private GameObject explosion;
+        [SerializeField] private GameObject smoke;
+        [SerializeField] private GameObject fire;
+        [SerializeField] private SoundPlayer startFlyingSoundPlayer;
         private Transform planeTransform;
         private bool isActivated = false;
         private float currentSpeed = 0f;
         private float currentAngularSpeed = 0f;
+
+        private void Start()
+        {
+            fire.SetActive(false);
+            smoke.SetActive(false);
+        }
 
         private void Update()
         {
@@ -33,12 +43,24 @@ namespace Simulations
             isActivated = true;
             this.planeTransform = planeTransform;
             Invoke(nameof(SetAngularSpeed), 5f);
-            //activate effects
+            ActivateEffects();
         }
 
         private void SetAngularSpeed()
         {
             currentAngularSpeed = angularSpeed;
+        }
+
+        private void ActivateEffects()
+        {
+            startFlyingSoundPlayer.PlaySound();
+            fire.SetActive(true);
+            Invoke(nameof(ActivateSmoke), 2f);
+        }
+
+        private void ActivateSmoke()
+        {
+            smoke.SetActive(true);
         }
 
         private void OnTriggerEnter(Collider other)

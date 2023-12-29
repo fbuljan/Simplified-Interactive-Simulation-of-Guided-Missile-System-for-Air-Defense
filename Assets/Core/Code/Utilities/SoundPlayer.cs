@@ -22,5 +22,10 @@ namespace Utilities
         {
             audioSource.Play();
         }
+
+        public void StopSound()
+        {
+            audioSource.Stop();
+        }
     }
 }

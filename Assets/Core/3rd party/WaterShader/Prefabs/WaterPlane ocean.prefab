@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5024200703790211826}
   - component: {fileID: 3265216874820071695}
   - component: {fileID: 2979545910648420862}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: WaterPlane ocean
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32,7 +32,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5024200703790211826
 MeshFilter:

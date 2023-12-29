@@ -47,11 +47,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   directionalLight: {fileID: 0}
   lightingPreset: {fileID: 11400000, guid: 40975e06c46a9f941b0d95462154156d, type: 2}
-  dayLength: 60
-  nightLength: 20
+  dayLength: 600
+  nightLength: 600
   currentHours: 0
   currentMinutes: -1
-  startDayPeriod: 5
+  startDayPeriod: 12
 --- !u!114 &8870905819237682758
 MonoBehaviour:
   m_ObjectHideFlags: 0

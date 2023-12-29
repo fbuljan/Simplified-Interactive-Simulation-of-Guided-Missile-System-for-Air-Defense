@@ -1,4 +1,5 @@
 using UnityEngine;
+using Utilities;
 
 namespace Simulations
 {
@@ -8,6 +9,7 @@ namespace Simulations
         [SerializeField] private KeyCode endSimulationButton = KeyCode.Backspace;
         [SerializeField] private GameObject planePrefab;
         [SerializeField] private GameObject missileLauncherPrefab;
+        [SerializeField] private SoundPlayer backgroundSoundPlayer;
         [SerializeField, Range(0.0f, 1.0f)] private float spawningBounds = 0.1f;
         [SerializeField] private float minObjectDistance = 10f;
         [SerializeField] private float maxObjectDistance = 50f;
@@ -34,7 +36,7 @@ namespace Simulations
         private void CheckInput()
         {
             if (Input.GetKeyDown(startSimulationButton)) StartSimulation();
-            if (Input.GetKeyDown(endSimulationButton)) StopSimulation();
+            if (Input.GetKeyDown(endSimulationButton)) StopSimulation(false);
         }
 
         private void StartSimulation()
@@ -42,8 +44,9 @@ namespace Simulations
             if (simulationRunning) return;
 
             simulationRunning = true;
+            backgroundSoundPlayer.PlaySound();
             InitSimulation();
-            Debug.Log("Simulation started.");
+            Debug.Log("Simulation started."); //todo add UI
         }
 
         private void InitSimulation()
@@ -52,10 +55,17 @@ namespace Simulations
             Vector3 planeTarget = GetOppositePosition(planePosition);
             planeTarget += (planeTarget - planePosition) * 100f;
             plane = Instantiate(planePrefab, planePosition, Quaternion.identity);
-            plane.GetComponent<PlaneController>().TargetPosition = planeTarget;
+            PlaneController planeController = plane.GetComponent<PlaneController>();
+            planeController.TargetPosition = planeTarget;
+            planeController.OnPlaneCrashed += OnPlaneCrashed;
             Vector3 launcherPosition = GenerateLauncherPosition(planePosition);
             missileLauncher = Instantiate(missileLauncherPrefab, launcherPosition, Quaternion.Euler(-90f, 0f, 0f));
             missileLauncher.GetComponent<MissileLauncherController>().Init(plane.transform);
+        }
+
+        private void OnPlaneCrashed()
+        {
+            StopSimulation(true);
         }
 
         private Vector3 GenerateRandomPositionOnTerrainWithinBounds()
@@ -116,14 +126,16 @@ namespace Simulations
             return position;
         }
 
-        private void StopSimulation()
+        private void StopSimulation(bool planeCrashed)
         {
             if (!simulationRunning) return;
 
             simulationRunning = false;
-            Debug.Log("Simulation ended.");
-            Destroy(plane);
-            Destroy(missileLauncher);
+            backgroundSoundPlayer.StopSound();
+            Debug.Log("Simulation ended."); //todo add notifications to ui 
+            if (plane) Destroy(plane);
+            if (missileLauncher) Destroy(missileLauncher);
+            //if (planeCrashed) ReplayOption(); //todo add replay text to instructions in this moment
         }
     }
 }

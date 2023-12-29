@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Simulations
 {
@@ -13,6 +15,8 @@ namespace Simulations
         private Vector3 targetPosition;
         private Quaternion targetFallRotation;
         private bool isHit = false;
+
+        public event Action OnPlaneCrashed;
 
         public Vector3 TargetPosition { get => targetPosition; set => targetPosition = value; }
 
@@ -59,13 +63,15 @@ namespace Simulations
             rb.useGravity = true;
             rb.isKinematic = false;
             rb.AddForce(Vector3.down * 2500f, ForceMode.Acceleration);
+            rb.AddForce(transform.forward * 3000f, ForceMode.Acceleration);
             targetFallRotation = Quaternion.Euler(30f, Random.Range(20, 120f), Random.Range(20f, 120f));
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!other.TryGetComponent(out Terrain terrain)) return;
+            if (!other.TryGetComponent(out Terrain _)) return;
 
+            OnPlaneCrashed?.Invoke();
             Instantiate(explosion, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
