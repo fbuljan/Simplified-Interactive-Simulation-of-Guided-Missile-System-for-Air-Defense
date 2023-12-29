@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Utilities;
 using Random = UnityEngine.Random;
 
 namespace Simulations
@@ -11,14 +12,19 @@ namespace Simulations
         [SerializeField] private float maxHeight = 100f;
         [SerializeField] private LayerMask terrainLayer;
         [SerializeField] private GameObject explosion;
-        private float currentSpeed = 0f;
+        [SerializeField] private GameObject cameraRoot;
         private Vector3 targetPosition;
+        private Vector3 hitPosition;
         private Quaternion targetFallRotation;
         private bool isHit = false;
+        private float currentSpeed = 0f;
 
         public event Action OnPlaneCrashed;
 
         public Vector3 TargetPosition { get => targetPosition; set => targetPosition = value; }
+        public GameObject CameraRoot => cameraRoot;
+        public bool IsHit => isHit;
+        public Vector3 HitPosition => hitPosition;
 
         private void Update()
         {
@@ -59,12 +65,14 @@ namespace Simulations
         public void OnHit()
         {
             isHit = true;
+            hitPosition = transform.position;
             Rigidbody rb = GetComponent<Rigidbody>();
             rb.useGravity = true;
             rb.isKinematic = false;
             rb.AddForce(Vector3.down * 2500f, ForceMode.Acceleration);
             rb.AddForce(transform.forward * 3000f, ForceMode.Acceleration);
             targetFallRotation = Quaternion.Euler(30f, Random.Range(20, 120f), Random.Range(20f, 120f));
+            if (cameraRoot.transform.childCount > 0) cameraRoot.transform.GetChild(0).parent = null;
         }
 
         private void OnTriggerEnter(Collider other)
@@ -73,6 +81,9 @@ namespace Simulations
 
             OnPlaneCrashed?.Invoke();
             Instantiate(explosion, transform.position, Quaternion.identity);
+            Camera mainCamera = Camera.main;
+            mainCamera.transform.eulerAngles = new Vector3(45, 0, 0);
+            mainCamera.transform.position = new Vector3(1500, 2000, -500);
             Destroy(gameObject);
         }
     }

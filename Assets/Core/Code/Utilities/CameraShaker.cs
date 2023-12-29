@@ -5,7 +5,15 @@ namespace Utilities
 {
     public class CameraShake : MonoBehaviour
     {
-        public IEnumerator Shake(float duration, float magnitude)
+        private const float delay = 0.15f;
+
+        public void ShakeCamera(float duration, float magnitude)
+        {
+            StopAllCoroutines();
+            StartCoroutine(Shake(duration, magnitude));
+        }
+
+        private IEnumerator Shake(float duration, float magnitude)
         {
             Vector3 originalPos = transform.localPosition;
             float elapsed = 0.0f;
@@ -14,11 +22,12 @@ namespace Utilities
             {
                 float x = Random.Range(-1f, 1f) * magnitude;
                 float y = Random.Range(-1f, 1f) * magnitude;
+                float z = Random.Range(-1f, 1f) * magnitude;
 
-                transform.localPosition = new Vector3(x, y, originalPos.z);
+                transform.localPosition = originalPos + new Vector3(x, y, z);
 
-                elapsed += Time.deltaTime;
-                yield return null;
+                yield return new WaitForSeconds(delay);
+                elapsed += delay;
             }
 
             transform.localPosition = originalPos;

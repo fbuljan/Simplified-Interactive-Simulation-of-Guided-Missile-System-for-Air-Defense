@@ -8,6 +8,7 @@ namespace Simulations
         [SerializeField] private KeyCode startSimulationButton = KeyCode.Space;
         [SerializeField] private KeyCode endSimulationButton = KeyCode.Backspace;
         [SerializeField] private KeyCode replayButton = KeyCode.R;
+        [SerializeField] private KeyCode cameraButton = KeyCode.C;
         [SerializeField] private GameObject planePrefab;
         [SerializeField] private GameObject missileLauncherPrefab;
         [SerializeField] private SoundPlayer backgroundSoundPlayer;
@@ -16,14 +17,18 @@ namespace Simulations
         [SerializeField] private float maxObjectDistance = 50f;
         [SerializeField] private float minHeight = 5f;
         [SerializeField] private float planeInitialHeight = 1000f;
+        private MissileLauncherController missileLauncherController;
+        private PlaneController planeController;
         private Terrain terrain;
         private GameObject plane;
         private GameObject missileLauncher;
+        private Camera mainCamera;
         private Vector3 planePositionCache;
         private Vector3 planeTargetCache;
         private Vector3 launcherPositionCache;
         private bool simulationRunning = false;
         private bool replayAvailable = false;
+        private int cameraPositionIndex = 0;
 
         public KeyCode EndSimulationButton => endSimulationButton;
         public KeyCode StartSimulationButton => startSimulationButton;
@@ -31,17 +36,21 @@ namespace Simulations
         private void Start()
         {
             terrain = Terrain.activeTerrain;
+            mainCamera = Camera.main;
+            ResetCamera();
         }
 
         private void Update()
         {
             CheckInput();
+            ControlCamera();
         }
 
         private void CheckInput()
         {
             if (Input.GetKeyDown(startSimulationButton)) StartSimulation();
             if (Input.GetKeyDown(endSimulationButton)) StopSimulation(false);
+            if (Input.GetKeyDown(cameraButton)) cameraPositionIndex = (cameraPositionIndex + 1) % 3;
             if (Input.GetKeyDown(replayButton) && replayAvailable)
                 Simulate(planePositionCache, planeTargetCache, launcherPositionCache);
         }
@@ -50,7 +59,6 @@ namespace Simulations
         {
             if (simulationRunning) return;
 
-            simulationRunning = true;
             backgroundSoundPlayer.PlaySound();
             InitSimulation();
             Debug.Log("Simulation started."); //todo add UI
@@ -76,13 +84,15 @@ namespace Simulations
 
         private void Simulate(Vector3 planePosition, Vector3 planeTarget, Vector3 launcherPosition)
         {
+            simulationRunning = true;
             replayAvailable = false;
             plane = Instantiate(planePrefab, planePosition, Quaternion.identity);
-            PlaneController planeController = plane.GetComponent<PlaneController>();
+            planeController = plane.GetComponent<PlaneController>();
             planeController.TargetPosition = planeTarget;
             planeController.OnPlaneCrashed += OnPlaneCrashed;
             missileLauncher = Instantiate(missileLauncherPrefab, launcherPosition, Quaternion.Euler(-90f, 0f, 0f));
-            missileLauncher.GetComponent<MissileLauncherController>().Init(plane.transform);
+            missileLauncherController = missileLauncher.GetComponent<MissileLauncherController>();
+            missileLauncherController.Init(plane.transform);
         }
 
         private void OnPlaneCrashed()
@@ -152,12 +162,49 @@ namespace Simulations
         {
             if (!simulationRunning) return;
 
+            ResetCamera();
             simulationRunning = false;
             backgroundSoundPlayer.StopSound();
             Debug.Log("Simulation ended."); //todo add notifications to ui 
             if (plane) Destroy(plane);
             if (missileLauncher) Destroy(missileLauncher);
             if (planeCrashed) replayAvailable = true; ; //todo add replay text to instructions in this moment
+        }
+
+        private void ControlCamera()
+        {
+            if (planeController != null && planeController.IsHit && cameraPositionIndex != 0)
+            {
+                mainCamera.transform.parent = null;
+                mainCamera.transform.position = planeController.HitPosition;
+                mainCamera.transform.LookAt(planeController.transform.position);
+                return;
+            }
+
+            if (!simulationRunning || cameraPositionIndex == 2 && missileLauncherController.ActiveMissile == null) cameraPositionIndex = 0;
+
+            if (cameraPositionIndex == 0)
+            {
+                ResetCamera();
+                return;
+            }
+
+            if (cameraPositionIndex == 1)
+            {
+                mainCamera.transform.parent = planeController.CameraRoot.transform;
+                mainCamera.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+                return;
+            }
+            
+            mainCamera.transform.parent = missileLauncherController.ActiveMissile.CameraRoot.transform;
+            mainCamera.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+        }
+
+        private void ResetCamera()
+        {
+            mainCamera.transform.parent = null;
+            mainCamera.transform.eulerAngles = new Vector3(45, 0, 0);
+            mainCamera.transform.position = new Vector3(2040, 1660, 90);
         }
     }
 }

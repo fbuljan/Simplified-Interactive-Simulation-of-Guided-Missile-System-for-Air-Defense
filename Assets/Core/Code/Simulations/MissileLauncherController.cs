@@ -10,6 +10,8 @@ namespace Simulations
         private Transform planeTransform;
         private int activateMissleIndex = 0;
 
+        public Missile ActiveMissile => missiles[0];
+
         public void Init(Transform planeTransform)
         {
             this.planeTransform = planeTransform;

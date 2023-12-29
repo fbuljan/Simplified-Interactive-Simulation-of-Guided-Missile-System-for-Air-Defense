@@ -12,10 +12,14 @@ namespace Simulations
         [SerializeField] private GameObject smoke;
         [SerializeField] private GameObject fire;
         [SerializeField] private SoundPlayer startFlyingSoundPlayer;
+        [SerializeField] private GameObject cameraRoot;
         private Transform planeTransform;
         private bool isActivated = false;
+        private bool cameraPositionBool = false;
         private float currentSpeed = 0f;
         private float currentAngularSpeed = 0f;
+
+        public GameObject CameraRoot => cameraRoot;
 
         private void Start()
         {
@@ -26,6 +30,16 @@ namespace Simulations
         private void Update()
         {
             MoveTowardsPlane();
+
+            if (cameraPositionBool)
+            {
+                cameraRoot.transform.localPosition = new Vector3(0, 65, -65);
+                cameraRoot.transform.localEulerAngles = new Vector3(45, 0, 0);
+                return;
+            }
+
+            cameraRoot.transform.localPosition = new Vector3(-5, 150, 120);
+            cameraRoot.transform.localEulerAngles = new Vector3(110, 0, 0);
         }
 
         private void MoveTowardsPlane()
@@ -42,13 +56,19 @@ namespace Simulations
         {
             isActivated = true;
             this.planeTransform = planeTransform;
-            Invoke(nameof(SetAngularSpeed), 5f);
+            Invoke(nameof(SetAngularSpeed), 4f);
+            Invoke(nameof(SetCameraPosition), 2f);
             ActivateEffects();
         }
 
         private void SetAngularSpeed()
         {
             currentAngularSpeed = angularSpeed;
+        }
+
+        private void SetCameraPosition()
+        {
+            cameraPositionBool = true;
         }
 
         private void ActivateEffects()
@@ -70,6 +90,11 @@ namespace Simulations
             Instantiate(explosion, planeController.transform.position, Quaternion.identity);
             planeController.OnHit();
             Destroy(gameObject);
+        }
+
+        private void OnDestroy()
+        {
+            if (cameraRoot.transform.childCount > 0) cameraRoot.transform.GetChild(0).parent = null;
         }
     }
 }
