@@ -318,6 +318,10 @@ MonoBehaviour:
   smokes:
   - {fileID: 2350793854677212139}
   - {fileID: 3432512109782626508}
+  planeParts:
+  - {fileID: 5199236383744877835}
+  - {fileID: 1918418163207054096}
+  - {fileID: 354474506306831863}
 --- !u!54 &68921837550648463
 Rigidbody:
   m_ObjectHideFlags: 0

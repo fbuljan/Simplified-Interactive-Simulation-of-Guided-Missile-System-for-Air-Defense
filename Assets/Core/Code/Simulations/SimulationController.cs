@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 using Utilities;
+using Random = UnityEngine.Random;
 
 namespace Simulations
 {
@@ -32,6 +34,12 @@ namespace Simulations
 
         public KeyCode EndSimulationButton => endSimulationButton;
         public KeyCode StartSimulationButton => startSimulationButton;
+        public KeyCode ReplayButton => replayButton;
+        public KeyCode CameraButton => cameraButton;
+        public bool SimulationRunning => simulationRunning;
+        public bool ReplayAvailable => replayAvailable;
+
+        public event Action<bool> OnSimulationMilestone;
 
         private void Start()
         {
@@ -59,14 +67,12 @@ namespace Simulations
         {
             if (simulationRunning) return;
 
-            backgroundSoundPlayer.PlaySound();
             InitSimulation();
-            Debug.Log("Simulation started."); //todo add UI
+            OnSimulationMilestone?.Invoke(true);
         }
 
         private void InitSimulation()
         {
-            //todo hide UI
             Vector3 planePosition = GenerateRandomPositionOnTerrainWithinBounds();
             Vector3 planeTarget = GetOppositePosition(planePosition);
             planeTarget += (planeTarget - planePosition) * 100f;
@@ -93,6 +99,7 @@ namespace Simulations
             missileLauncher = Instantiate(missileLauncherPrefab, launcherPosition, Quaternion.Euler(-90f, 0f, 0f));
             missileLauncherController = missileLauncher.GetComponent<MissileLauncherController>();
             missileLauncherController.Init(plane.transform);
+            backgroundSoundPlayer.PlaySound();
         }
 
         private void OnPlaneCrashed()
@@ -165,10 +172,10 @@ namespace Simulations
             ResetCamera();
             simulationRunning = false;
             backgroundSoundPlayer.StopSound();
-            Debug.Log("Simulation ended."); //todo add notifications to ui 
-            if (plane) Destroy(plane);
+            if (plane && !planeController.DestroyInitiated) Destroy(plane);
             if (missileLauncher) Destroy(missileLauncher);
-            if (planeCrashed) replayAvailable = true; ; //todo add replay text to instructions in this moment
+            if (planeCrashed) replayAvailable = true;
+            OnSimulationMilestone?.Invoke(false);
         }
 
         private void ControlCamera()

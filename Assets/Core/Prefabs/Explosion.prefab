@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3721066860041862460}
   - component: {fileID: 7703619881777969881}
   - component: {fileID: 4518858661701230360}
+  - component: {fileID: 4552811314699528771}
   m_Layer: 0
   m_Name: Explosion
   m_TagString: Untagged
@@ -4999,3 +5000,16 @@ MonoBehaviour:
   audioClip: {fileID: 8300000, guid: da759509feef34757a83917ae4a0c8ce, type: 3}
   loop: 0
   playOnStart: 1
+--- !u!114 &4552811314699528771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8692887893901918669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b2c4e3180e3a8d4183906ead6bbbf68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  delay: 10

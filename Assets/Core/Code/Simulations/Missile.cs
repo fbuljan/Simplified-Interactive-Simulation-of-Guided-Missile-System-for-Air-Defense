@@ -56,8 +56,8 @@ namespace Simulations
         {
             isActivated = true;
             this.planeTransform = planeTransform;
-            Invoke(nameof(SetAngularSpeed), 4f);
-            Invoke(nameof(SetCameraPosition), 2f);
+            Invoke(nameof(SetAngularSpeed), 3.5f);
+            Invoke(nameof(SetCameraPosition), 3f);
             ActivateEffects();
         }
 

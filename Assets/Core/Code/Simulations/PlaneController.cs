@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Utilities;
 using Random = UnityEngine.Random;
 
 namespace Simulations
@@ -18,6 +19,7 @@ namespace Simulations
         private Vector3 hitPosition;
         private Quaternion targetFallRotation;
         private bool isHit = false;
+        private bool destroyInitiated = false;
         private float currentSpeed = 0f;
 
         public event Action OnPlaneCrashed;
@@ -26,6 +28,7 @@ namespace Simulations
         public GameObject CameraRoot => cameraRoot;
         public bool IsHit => isHit;
         public Vector3 HitPosition => hitPosition;
+        public bool DestroyInitiated => destroyInitiated;
 
         private void Update()
         {
@@ -81,19 +84,20 @@ namespace Simulations
 
         private void SpawnMoreSmoke()
         {
-            GameObject smoke = Instantiate(smokes[0], transform.position, Quaternion.Euler(-90, 0, 0));
-            Destroy(smoke, 7f);
+            Instantiate(smokes[0], transform.position, Quaternion.Euler(-90, 0, 0));
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!other.TryGetComponent(out Terrain _)) return;
+            if (destroyInitiated || !other.TryGetComponent(out Terrain _)) return;
 
-            OnPlaneCrashed?.Invoke();
             Instantiate(explosion, transform.position, Quaternion.identity);
             Camera mainCamera = Camera.main;
             mainCamera.transform.eulerAngles = new Vector3(45, 0, 0);
             mainCamera.transform.position = new Vector3(1500, 2000, -500);
+            GetComponent<SoundPlayer>().StopSound();
+            destroyInitiated = true;
+            OnPlaneCrashed?.Invoke();
             Destroy(gameObject);
         }
     }
