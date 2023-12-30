@@ -203,8 +203,8 @@ namespace Simulations
         private void ResetCamera()
         {
             mainCamera.transform.parent = null;
-            mainCamera.transform.eulerAngles = new Vector3(45, 0, 0);
-            mainCamera.transform.position = new Vector3(2040, 1660, 90);
+            mainCamera.transform.eulerAngles = new Vector3(30, 0, 0);
+            mainCamera.transform.position = new Vector3(2040, 1660, -200);
         }
     }
 }

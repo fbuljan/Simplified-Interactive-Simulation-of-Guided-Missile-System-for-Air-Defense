@@ -55,6 +55,7 @@ namespace Simulations
         private void FallDown()
         {
             transform.rotation = Quaternion.Lerp(transform.rotation, targetFallRotation, 0.22f * Time.deltaTime);
+            smokes.ForEach(smoke => smoke.transform.localRotation = Quaternion.Inverse(transform.rotation) * Quaternion.Euler(-90, 0, 0));
         }
 
         private void OnDrawGizmos()
@@ -75,6 +76,13 @@ namespace Simulations
             targetFallRotation = Quaternion.Euler(30f, Random.Range(20, 120f), Random.Range(20f, 120f));
             smokes.ForEach(smoke => smoke.SetActive(true));
             if (cameraRoot.transform.childCount > 0) cameraRoot.transform.GetChild(0).parent = null;
+            InvokeRepeating(nameof(SpawnMoreSmoke), 0.5f, 0.1f);
+        }
+
+        private void SpawnMoreSmoke()
+        {
+            GameObject smoke = Instantiate(smokes[0], transform.position, Quaternion.Euler(-90, 0, 0));
+            Destroy(smoke, 7f);
         }
 
         private void OnTriggerEnter(Collider other)
