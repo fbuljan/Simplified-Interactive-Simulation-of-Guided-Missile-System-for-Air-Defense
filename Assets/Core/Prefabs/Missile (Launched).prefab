@@ -10353,7 +10353,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   acceleration: 20
-  maxSpeed: 200
+  maxSpeed: 300
   angularSpeed: 100
   explosion: {fileID: 8692887893901918669, guid: 732c5656150c5464a8af074e930088be, type: 3}
   smoke: {fileID: 1162396264893416121}

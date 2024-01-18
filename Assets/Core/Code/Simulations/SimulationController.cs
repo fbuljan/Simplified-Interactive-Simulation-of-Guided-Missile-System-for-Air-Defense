@@ -42,7 +42,6 @@ namespace Simulations
         public bool ReplayAvailable => replayAvailable;
 
         public event Action<bool> OnSimulationMilestone;
-        public event Action OnReplay;
 
         private void Start()
         {
@@ -62,11 +61,7 @@ namespace Simulations
             if (Input.GetKeyDown(startSimulationButton)) StartSimulation();
             if (Input.GetKeyDown(endSimulationButton)) StopSimulation(false);
             ControlCameraPosition();
-            if (Input.GetKeyDown(replayButton) && replayAvailable)
-            {
-                OnReplay?.Invoke();
-                Simulate(planePositionCache, planeTargetCache, launcherPositionCache);
-            }
+            if (Input.GetKeyDown(replayButton) && replayAvailable) Simulate(planePositionCache, planeTargetCache, launcherPositionCache);
         }
 
         private void ControlCameraPosition()

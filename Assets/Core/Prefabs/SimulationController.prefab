@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2428760898189466918}
   - component: {fileID: 2329446974136070002}
-  - component: {fileID: 6181083584357977658}
   m_Layer: 0
   m_Name: SimulationController
   m_TagString: Untagged
@@ -57,18 +56,3 @@ MonoBehaviour:
   maxObjectDistance: 1500
   minHeight: 15
   planeInitialHeight: 1000
---- !u!114 &6181083584357977658
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2310978611630348793}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7517a26bc59bd4242ae0d134da561163, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  explosionPrefab: {fileID: 8692887893901918669, guid: 732c5656150c5464a8af074e930088be, type: 3}
-  simulationController: {fileID: 2329446974136070002}
-  maxTimeBetweenExplosions: 5

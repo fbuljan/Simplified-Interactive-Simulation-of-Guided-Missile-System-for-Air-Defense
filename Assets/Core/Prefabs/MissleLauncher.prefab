@@ -41,6 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3045310896491903363}
   - component: {fileID: 6094151817961399474}
+  - component: {fileID: 12177059088462460}
   m_Layer: 0
   m_Name: MissleLauncher
   m_TagString: Untagged
@@ -88,6 +89,22 @@ MonoBehaviour:
   activationRange: 1500
   activateManualControl: 109
   cameraRoot: {fileID: 1861812087219655373}
+  aimingRotationSpeed: 20
+--- !u!114 &12177059088462460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6591410193130336489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7517a26bc59bd4242ae0d134da561163, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  explosionPrefab: {fileID: 8692887893901918669, guid: 732c5656150c5464a8af074e930088be, type: 3}
+  maxTimeBetweenExplosions: 5
+  range: 500
 --- !u!1001 &556024313476079020
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -53,8 +53,13 @@ namespace Simulations
             {
                 inputInstructions.text = $"End simulation: {simulationController.EndSimulationButton}.\n" +
                     $"\nChange camera mode: {simulationController.CameraButton}.\n";
-                if (missileLauncherController != null) inputInstructions.text += $"\nMissle manually controlled: {missileLauncherController.IsManuallyControlled}.\n " +
-                        $"Control with: {missileLauncherController.ActivateManualControl}";
+                if (missileLauncherController != null)
+                {
+                    inputInstructions.text += $"\nMissle manually controlled: {missileLauncherController.IsManuallyControlled}.\n " +
+                        $"Control with: {missileLauncherController.ActivateManualControl}.";
+                    if (missileLauncherController.IsManuallyControlled) inputInstructions.text += "\nControl with arrows.";
+                }
+
                 return;
             }
 

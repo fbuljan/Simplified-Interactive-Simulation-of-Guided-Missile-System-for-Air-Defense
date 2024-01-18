@@ -84,7 +84,7 @@ namespace Simulations
 
         private void SpawnMoreSmoke()
         {
-            Instantiate(smokes[0], transform.position, Quaternion.Euler(-90, 0, 0));
+            if (smokes[0]) Instantiate(smokes[0], transform.position, Quaternion.Euler(-90, 0, 0));
         }
 
         private void OnTriggerEnter(Collider other)
