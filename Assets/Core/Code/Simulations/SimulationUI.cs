@@ -44,6 +44,7 @@ namespace Simulations
         {
             if (missileLauncherController != null) aim.SetActive(missileLauncherController.IsManuallyControlled && 
                 !missileLauncherController.ActiveMissile.IsActivated);
+            else missileLauncherController = FindObjectOfType<MissileLauncherController>();
             GenerateInputInstructions();
         }
 

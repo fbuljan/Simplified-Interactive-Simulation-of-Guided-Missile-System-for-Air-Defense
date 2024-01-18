@@ -104,7 +104,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explosionPrefab: {fileID: 8692887893901918669, guid: 732c5656150c5464a8af074e930088be, type: 3}
   maxTimeBetweenExplosions: 5
-  range: 500
+  range: 250
 --- !u!1001 &556024313476079020
 PrefabInstance:
   m_ObjectHideFlags: 0
