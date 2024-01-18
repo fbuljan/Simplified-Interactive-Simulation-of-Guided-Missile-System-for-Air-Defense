@@ -10,6 +10,8 @@ namespace Simulations
         [SerializeField] private TMP_Text inputInstructions;
         [SerializeField] private SimulationController simulationController;
         [SerializeField] private TMP_Text notification;
+        [SerializeField] private GameObject aim;
+        private MissileLauncherController missileLauncherController;
         private Color originalColor = Color.black;
 
         private void OnEnable()
@@ -27,6 +29,7 @@ namespace Simulations
             string text = start ? "Simulation started!" : "Simulation ended!";
             notification.text = text;
             notification.gameObject.SetActive(true);
+            missileLauncherController = start ? FindObjectOfType<MissileLauncherController>() : null;
             StopAllCoroutines();
             StartCoroutine(FadeOutText(3f));
         }
@@ -34,10 +37,13 @@ namespace Simulations
         private void Start()
         {
             notification.gameObject.SetActive(false);
+            aim.SetActive(false);
         }
 
         private void Update()
         {
+            if (missileLauncherController != null) aim.SetActive(missileLauncherController.IsManuallyControlled && 
+                !missileLauncherController.ActiveMissile.IsActivated);
             GenerateInputInstructions();
         }
 
@@ -46,7 +52,9 @@ namespace Simulations
             if (simulationController.SimulationRunning)
             {
                 inputInstructions.text = $"End simulation: {simulationController.EndSimulationButton}.\n" +
-                    $"Change camera mode: {simulationController.CameraButton}.";
+                    $"\nChange camera mode: {simulationController.CameraButton}.\n";
+                if (missileLauncherController != null) inputInstructions.text += $"\nMissle manually controlled: {missileLauncherController.IsManuallyControlled}.\n " +
+                        $"Control with: {missileLauncherController.ActivateManualControl}";
                 return;
             }
 

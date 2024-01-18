@@ -31,6 +31,8 @@ namespace Simulations
         private bool simulationRunning = false;
         private bool replayAvailable = false;
         private int cameraPositionIndex = 0;
+        private int cameraPositionIndexCache = 0;
+        private bool wasCameraManualLastFrame = false;
 
         public KeyCode EndSimulationButton => endSimulationButton;
         public KeyCode StartSimulationButton => startSimulationButton;
@@ -40,6 +42,7 @@ namespace Simulations
         public bool ReplayAvailable => replayAvailable;
 
         public event Action<bool> OnSimulationMilestone;
+        public event Action OnReplay;
 
         private void Start()
         {
@@ -58,9 +61,33 @@ namespace Simulations
         {
             if (Input.GetKeyDown(startSimulationButton)) StartSimulation();
             if (Input.GetKeyDown(endSimulationButton)) StopSimulation(false);
-            if (Input.GetKeyDown(cameraButton)) cameraPositionIndex = (cameraPositionIndex + 1) % 3;
+            ControlCameraPosition();
             if (Input.GetKeyDown(replayButton) && replayAvailable)
+            {
+                OnReplay?.Invoke();
                 Simulate(planePositionCache, planeTargetCache, launcherPositionCache);
+            }
+        }
+
+        private void ControlCameraPosition()
+        {
+            bool cameraManual = missileLauncherController != null && missileLauncherController.IsManuallyControlled &&
+                            !missileLauncherController.ActiveMissile.IsActivated;
+            if (cameraManual && !wasCameraManualLastFrame)
+            {
+                wasCameraManualLastFrame = true;
+                mainCamera.transform.parent = missileLauncherController.CameraRoot;
+                mainCamera.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+                missileLauncherController.CameraRoot.LookAt(planeController.transform.position);
+                cameraPositionIndex = -1;
+                return;
+            }
+
+            if (!cameraManual)
+            {
+                wasCameraManualLastFrame = false;
+                if (Input.GetKeyDown(cameraButton)) cameraPositionIndex = (cameraPositionIndex + 1) % 3;
+            }
         }
 
         private void StartSimulation()
@@ -99,7 +126,16 @@ namespace Simulations
             missileLauncher = Instantiate(missileLauncherPrefab, launcherPosition, Quaternion.Euler(-90f, 0f, 0f));
             missileLauncherController = missileLauncher.GetComponent<MissileLauncherController>();
             missileLauncherController.Init(plane.transform);
+            missileLauncherController.ActiveMissile.OnPlaneTransformAttached += ActiveMissile_OnPlaneTransformAttached;
             backgroundSoundPlayer.PlaySound();
+        }
+
+        private void ActiveMissile_OnPlaneTransformAttached()
+        {
+            if (cameraPositionIndex != -1) return;
+
+            cameraPositionIndex = 2;
+            missileLauncherController.IsManuallyControlled = false;
         }
 
         private void OnPlaneCrashed()
@@ -180,6 +216,8 @@ namespace Simulations
 
         private void ControlCamera()
         {
+            if (cameraPositionIndex < 0) return;
+
             if (planeController != null && planeController.IsHit && cameraPositionIndex != 0)
             {
                 mainCamera.transform.parent = null;
@@ -189,6 +227,9 @@ namespace Simulations
             }
 
             if (!simulationRunning || cameraPositionIndex == 2 && missileLauncherController.ActiveMissile == null) cameraPositionIndex = 0;
+
+            if (cameraPositionIndex == cameraPositionIndexCache) return;
+            cameraPositionIndexCache = cameraPositionIndex;
 
             if (cameraPositionIndex == 0)
             {

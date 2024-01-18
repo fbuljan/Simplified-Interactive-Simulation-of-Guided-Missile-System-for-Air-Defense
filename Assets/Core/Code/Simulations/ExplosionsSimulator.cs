@@ -12,11 +12,13 @@ namespace Simulations
         private void OnEnable()
         {
             simulationController.OnSimulationMilestone += OnSimulationMilestone;
+            simulationController.OnReplay += OnReplay;
         }
 
         private void OnDisable()
         {
             simulationController.OnSimulationMilestone -= OnSimulationMilestone;
+            simulationController.OnReplay -= OnReplay;
         }
 
         private void OnSimulationMilestone(bool obj)
@@ -28,6 +30,11 @@ namespace Simulations
             }
 
             CancelInvoke(nameof(SpawnRandomExplosion));
+        }
+
+        private void OnReplay()
+        {
+            OnSimulationMilestone(true);
         }
 
         private void Start()

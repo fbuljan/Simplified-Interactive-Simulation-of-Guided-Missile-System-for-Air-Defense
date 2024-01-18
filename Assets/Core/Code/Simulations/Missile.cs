@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Utilities;
 
@@ -13,13 +14,18 @@ namespace Simulations
         [SerializeField] private GameObject fire;
         [SerializeField] private SoundPlayer startFlyingSoundPlayer;
         [SerializeField] private GameObject cameraRoot;
-        private Transform planeTransform;
+        private Transform planeTransform = null;
+        private Transform planeTransformCache;
+        private Vector3 manualDirection;
         private bool isActivated = false;
         private bool cameraPositionBool = false;
         private float currentSpeed = 0f;
         private float currentAngularSpeed = 0f;
 
         public GameObject CameraRoot => cameraRoot;
+        public bool IsActivated => isActivated;
+
+        public event Action OnPlaneTransformAttached;
 
         private void Start()
         {
@@ -46,19 +52,30 @@ namespace Simulations
         {
             if (!isActivated) return;
 
-            Vector3 direction = (planeTransform.position - transform.position).normalized;
+            Vector3 automatedDirection = planeTransform == null ? Vector3.zero : (planeTransform.position - transform.position).normalized;
+            Vector3 direction = planeTransform == null ? manualDirection : automatedDirection;
             currentSpeed += acceleration * Time.deltaTime;
             currentSpeed = Mathf.Clamp(currentSpeed, 0f, maxSpeed);
             transform.SetPositionAndRotation(transform.position + currentSpeed * Time.deltaTime * transform.forward, Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * currentAngularSpeed));
         }
 
-        public void Activate(Transform planeTransform)
+        public void Activate(Transform planeTransform, Vector3 direction = default)
         {
             isActivated = true;
-            this.planeTransform = planeTransform;
-            Invoke(nameof(SetAngularSpeed), 3.5f);
+            float delay = direction == default ? 0f : 6.5f;
+            manualDirection = direction;
+            planeTransformCache = planeTransform;
+            Invoke(nameof(SetPlaneTransform), delay);
+            float angularSpeedDelay = direction == default ? 0f : 3.5f;
+            Invoke(nameof(SetAngularSpeed), angularSpeedDelay);
             Invoke(nameof(SetCameraPosition), 3f);
             ActivateEffects();
+        }
+
+        private void SetPlaneTransform()
+        {
+            planeTransform = planeTransformCache;
+            OnPlaneTransformAttached?.Invoke();
         }
 
         private void SetAngularSpeed()
@@ -85,10 +102,21 @@ namespace Simulations
 
         private void OnTriggerEnter(Collider other)
         {
+            if (other.TryGetComponent<Terrain>(out _))
+            {
+                Explode(transform.position);
+                return;
+            }
+
             if (!other.TryGetComponent<PlaneController>(out var planeController)) return;
 
-            Instantiate(explosion, planeController.transform.position, Quaternion.identity);
             planeController.OnHit();
+            Explode(planeController.transform.position);
+        }
+
+        private void Explode(Vector3 explodePosition)
+        {
+            Instantiate(explosion, explodePosition, Quaternion.identity);
             Destroy(gameObject);
         }
 
