@@ -66,7 +66,8 @@ namespace Simulations
             manualDirection = direction;
             planeTransformCache = planeTransform;
             Invoke(nameof(SetPlaneTransform), delay);
-            float angularSpeedDelay = direction == default ? 0f : 3.5f;
+            float angularSpeedDelay = direction == default ? 3.5f : 0f;
+            Debug.Log(angularSpeedDelay);
             Invoke(nameof(SetAngularSpeed), angularSpeedDelay);
             Invoke(nameof(SetCameraPosition), 3f);
             ActivateEffects();

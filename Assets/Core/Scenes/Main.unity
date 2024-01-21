@@ -804,6 +804,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1604819483252303897, guid: 8a7624f274a696644968321f9689cd64, type: 3}
+      propertyPath: startDayPeriod
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 1604819483252303897, guid: 8a7624f274a696644968321f9689cd64, type: 3}
       propertyPath: directionalLight
       value: 
       objectReference: {fileID: 705507994}
